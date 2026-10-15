@@ -1,13 +1,23 @@
-<?php include("header.php") ?>
+<?php 
+  require_once "config.php";
+
+  if(isset($_SESSION["user_id"])) {
+    header("Location: dashboard.php");
+    exit;
+  }
+  
+  include("header.php") 
+?>
 
 <div class="auth-container">
-  <h1 class="h3">Please sign in</h1>
+  <h1 class="h3">Please sign up</h1>
   <form action="register.php" method="POST">
+
     <input type="text" name="name" class="form-control" placeholder="Name" required>
 
-    <input type="text" name="Surname" class="form-control" placeholder="Surname" required>
+    <input type="text" name="surname" class="form-control" placeholder="Surname" required>
 
-    <input type="text" name="Username" class="form-control" placeholder="Username" required>
+    <input type="text" name="username" class="form-control" placeholder="Username" required>
 
     <input type="email" name="email" class="form-control" placeholder="Email" required>
 
@@ -19,7 +29,7 @@
 
     <small>
       Already have an account?
-      <a href="login.php">Sign In</a>
+      <a href="login.php">Sign up</a>
     </small>
 
     <p class="text-muted mt-5">

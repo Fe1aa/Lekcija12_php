@@ -1,4 +1,18 @@
-<?php include("header.php") ?>
+<?php
+  require_once "config.php";
+
+  if(!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit;
+  }
+
+  $username = htmlspecialchars($_SESSION["username"], ENT_QUOTES, "UTF-8");
+
+  $name = htmlspecialchars($_SESSION["name"], ENT_QUOTES, "UTF-8");
+
+  include("header.php") 
+
+?>
 
 <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
   <div class="container-fluid">
@@ -25,13 +39,13 @@
     <main class="col-md-9 col-lg-10 dashboard-content">
       <h1>Dashboard</h1>
 
-      <p>Welcome to Digital School!</p>
+      <p>Welcome <strong><?php echo $name; ?></strong></p>
 
       <div class="card mt-4">
         <div class="card-body">
           <h5 class="card-title">Welcome!</h5>
-          <p class="card-text">This is our Bootstrap dashboard.</p>
-
+          <p class="card-text">Username: <?php echo $username; ?></p>
+          <p>You are successfully logged in.</p>
           <a href="signup.php" class="btn btn-primary">Create Account</a>
         </div>
       </div>

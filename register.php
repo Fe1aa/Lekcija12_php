@@ -1,0 +1,61 @@
+<?php
+  include_once "config.php";
+
+  if($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: signup.php");
+    exit;
+  }
+
+  $name = trim($_POST["name"] ?? "");
+  $surname = trim($_POST["surname"] ?? "");
+  $username = trim($_POST["username"] ?? "");
+  $email = trim($_POST["email"] ?? "");
+  $password = $_POST["password"] ?? "";
+
+  if($name === "" || $surname === "" || $username === "" || $email === "" || $password === "") {
+    echo "$name<br>$surname<br>$username<br>$email<br>$password";
+    exit("Morate popuniti sva polja.");
+  }
+
+  if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    exit("Neispravna email adresa.");
+  }
+
+  if(strlen($password) < 8) {
+    exit("Lozinka mora imati najmanje 8 znakova.");
+  }
+
+  $sql = "SELECT id FROM new_users WHERE username = :username OR email = :email";
+
+  $stmt = $conn->prepare($sql);
+
+  $stmt->execute([
+    ":username" => $username,
+    ":email" => $email
+  ]);
+
+  if($stmt->fetch()) {
+    exit("Korisničko ime ili email već postoji.");
+  }
+
+  $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+  $sql = "INSERT INTO new_users (name, surname, username, email, password) VALUES (:name, :surname, :username, :email, :password)";
+
+  $stmt = $conn->prepare($sql);
+
+  try {
+  $stmt->execute([
+    ":name" => $name,
+    ":surname" => $surname,
+    ":username" => $username,
+    ":email" => $email,
+    ":password" => $hashedPassword
+  ]);
+  } catch(PDOException $e) {
+    error_log($e->getMessage());
+    exit("Registracija nije uspela.");
+  }
+  header("Location: login.php");
+  exit;
+?>
